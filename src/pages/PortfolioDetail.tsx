@@ -756,7 +756,7 @@ export default function PortfolioDetail() {
           portfolio={portfolio}
         />
 
-        {/* Confirmation Dialog */}
+        {/* Confirmation Dialog*/}
         <ConfirmationDialog />
       </div>
     </div>
