@@ -29,4 +29,4 @@ The platform is designed with a **dark green + black theme** to reflect the futu
 
 ---
 
-Deployment id: 12256125
+Akash Deployment Lease id: 12256125
