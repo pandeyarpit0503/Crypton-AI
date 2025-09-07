@@ -31,7 +31,7 @@ export function AIAnalysisComponent({ coinData }: AIAnalysisProps) {
     setError(null);
 
     try {
-      // Calculate confidence factors for display
+      // Calculate confidence factors for the display
       const marketData: MarketData = {
         price_usd: coinData.price_usd,
         percent_change_24h: coinData.percent_change_24h,
