@@ -22,6 +22,7 @@ import { Portfolio, PortfolioSummary, PortfolioHolding } from '@/types/portfolio
 import { portfolioService } from '@/services/portfolioService'
 import { AddHoldingDialog } from '@/components/portfolio/AddHoldingDialog'
 import { EditHoldingDialog } from '@/components/portfolio/EditHoldingDialog'
+import { EditPortfolioDialog } from '@/components/portfolio/EditPortfolioDialog'
 import { AIPortfolioInsights } from '@/components/ai/AIPortfolioInsights'
 import { usePortfolio } from '@/contexts/PortfolioContext'
 import { useConfirmationDialog } from '@/components/ui/confirmation-dialog'
@@ -69,7 +70,7 @@ function HoldingRow({
   }
 
   const formatPercentage = (percentage: number) => {
-    return `${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%`
+    return ${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%
   }
 
   if (isLoading) {
@@ -117,11 +118,11 @@ function HoldingRow({
       <td className="py-3 px-2 sm:px-4">
         <div className="flex items-center space-x-3">
           <img
-            src={`https://coinicons-api.vercel.app/api/icon/${holding.coin_symbol.toLowerCase()}`}
+            src={https://coinicons-api.vercel.app/api/icon/${holding.coin_symbol.toLowerCase()}}
             alt={holding.coin_name}
             className="w-8 h-8 rounded-full"
             onError={(e) => {
-              e.currentTarget.src = `https://via.placeholder.com/32/1a1a1a/ffffff?text=${holding.coin_symbol.charAt(0)}`
+              e.currentTarget.src = https://via.placeholder.com/32/1a1a1a/ffffff?text=${holding.coin_symbol.charAt(0)}
             }}
           />
           <div>
@@ -143,7 +144,7 @@ function HoldingRow({
         {formatCurrency(currentValue)}
       </td>
       <td className="text-right py-3 px-2 sm:px-4">
-        <div className={`font-mono ${isHoldingPositive ? 'text-crypto-green' : 'text-crypto-red'}`}>
+        <div className={font-mono ${isHoldingPositive ? 'text-crypto-green' : 'text-crypto-red'}}>
           {formatPercentage(profitLossPercentage)}
         </div>
       </td>
@@ -217,7 +218,7 @@ function HoldingCard({
   }
 
   const formatPercentage = (percentage: number) => {
-    return `${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%`
+    return ${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%
   }
 
   const formatDate = (dateString: string) => {
@@ -334,6 +335,7 @@ export default function PortfolioDetail() {
   const [deletingHoldingId, setDeletingHoldingId] = useState<string | null>(null)
   const [summary, setSummary] = useState<PortfolioSummary | null>(null)
   const [isLoadingSummary, setIsLoadingSummary] = useState(false)
+  const [showEditPortfolio, setShowEditPortfolio] = useState(false)
   const { deleteHolding } = usePortfolio()
   const { showConfirmation, ConfirmationDialog, isProcessing } = useConfirmationDialog()
 
@@ -390,11 +392,11 @@ export default function PortfolioDetail() {
     if (isProcessing || deletingHoldingId) return
 
     const holding = portfolio?.holdings.find(h => h.id === holdingId)
-    const holdingName = holding ? `${holding.coin_name} (${holding.coin_symbol})` : 'this holding'
+    const holdingName = holding ? ${holding.coin_name} (${holding.coin_symbol}) : 'this holding'
 
     showConfirmation({
       title: 'Delete Holding',
-      description: `Are you sure you want to delete ${holdingName}? This action cannot be undone and will permanently remove this holding from your portfolio.`,
+      description: Are you sure you want to delete ${holdingName}? This action cannot be undone and will permanently remove this holding from your portfolio.,
       confirmText: 'Delete Holding',
       cancelText: 'Cancel',
       variant: 'destructive',
@@ -436,7 +438,7 @@ export default function PortfolioDetail() {
   }
 
   const formatPercentage = (percentage: number) => {
-    return `${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%`
+    return ${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%
   }
 
   const formatDate = (dateString: string) => {
@@ -552,11 +554,9 @@ export default function PortfolioDetail() {
                     <span className="hidden sm:inline">Add Holding</span>
                     <span className="sm:hidden">Add</span>
                   </Button>
-                  <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
-                    <Link to={`/portfolio/${portfolio.id}/edit`}>
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit
-                    </Link>
+                  <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => setShowEditPortfolio(true)}>
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit
                   </Button>
                 </div>
               </div>
@@ -737,6 +737,23 @@ export default function PortfolioDetail() {
           portfolioId={portfolio.id}
           holding={editingHolding}
           onHoldingUpdated={handleHoldingUpdated}
+        />
+
+        {/* Edit Portfolio Dialog */}
+        <EditPortfolioDialog
+          open={showEditPortfolio}
+          onOpenChange={async (open) => {
+            setShowEditPortfolio(open)
+            if (!open) {
+              // Refresh portfolio data after closing the edit dialog
+              const updated = await portfolioService.getPortfolio(portfolio.id)
+              if (updated) {
+                setPortfolio(updated)
+                await loadPortfolioSummary(updated)
+              }
+            }
+          }}
+          portfolio={portfolio}
         />
 
         {/* Confirmation Dialog */}
